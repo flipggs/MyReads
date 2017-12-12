@@ -5,7 +5,7 @@ class BookShelf extends Component {
 
     render() {
 
-        const { shelf } = this.props
+        const { shelf, onChangeShelf } = this.props
         const { books } = shelf || []
         let name = ''
 
@@ -22,7 +22,7 @@ class BookShelf extends Component {
                 <div className="bookshelf-books">
                     <ol className="books-grid">
                         {books.map(book => (
-                            <Book key={book.id} book={book} />
+                            <Book key={book.id} book={book} onChangeShelf={onChangeShelf} />
                         ))}
 
                     </ol>
