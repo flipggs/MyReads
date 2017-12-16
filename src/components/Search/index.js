@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Book from './../Book/index';
 import * as BooksAPI from '../../BooksAPI'
+import IF from './../IF/index';
 
 class Search extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
 
         this.state = {
@@ -15,16 +16,18 @@ class Search extends Component {
 
     onChangeSearch = (e) => {
         const { target } = e
-        const {value} = target
-        
-        if (value.length >=3){
+        const { value } = target
+
+        if (value.length && value.length >= 3) {
+
             BooksAPI.search(value).then(books => {
+
                 if (books && books.length > 0)
-                    this.setState({books})
+                    this.setState({ books })
                 else
-                    this.setState({books: []})
+                    this.setState({ books: [] })
             }).catch(err => {
-                console.log(err.toString())
+                console.log(err)
             })
         }
     }
@@ -41,11 +44,16 @@ class Search extends Component {
                     </div>
                 </div>
                 <div className="search-books-results">
-                    <ol className="books-grid">
-                        {this.state.books.map(book => (
-                            <Book key={book.id} book={book} onChangeShelf={onChangeShelf} />
-                        ))}
-                    </ol>
+                    <IF test={this.state.books.length > 0} >
+                        <ol className="books-grid">
+                            {this.state.books.map(book => (
+                                <Book key={book.id} book={book} onChangeShelf={onChangeShelf} />
+                            ))}
+                        </ol>
+                    </IF>
+                    <IF test={this.state.books.length === 0}>
+                        <h3>No result found </h3>
+                    </IF>
                 </div>
             </div>
         )

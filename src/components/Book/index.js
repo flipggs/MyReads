@@ -16,7 +16,7 @@ class Book extends Component {
                             backgroundImage: `url("${book.imageLinks.smallThumbnail}")`
                         }}></div>
                     <div className="book-shelf-changer">
-                        <select value={book.shelf} onChange={ (e) => { onChangeShelf(book, e.target.value) }}>
+                        <select defaultValue="none" value={book.shelf} onChange={(e) => { onChangeShelf(book, e.target.value) }}>
                             <option value="none" disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>
@@ -26,7 +26,10 @@ class Book extends Component {
                     </div>
                 </div>
                 <div className="book-title">{book.title}</div>
-                <div className="book-authors">{book.authors.toString()}</div>
+                {book.authors && book.authors.length > 0 && book.authors.map((author, index) => (
+                    <div className="book-authors" key={index}>{author}</div>
+                ))}
+
             </div>
         )
     }
