@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import Book from './../Book/index';
+import Book from './../Book/index'
 import * as BooksAPI from '../../BooksAPI'
-import IF from './../IF/index';
+import IF from './../IF/index'
+import PropTypes from 'prop-types'
 
 class Search extends Component {
+
+    static propTypes = {
+        onChangeShelf: PropTypes.func.isRequired
+    }
 
     constructor(props) {
         super(props)
