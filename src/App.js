@@ -2,8 +2,8 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import Search from './components/Search/';
-import ListBooks from './components/ListBooks/';
+import Search from './components/Search/'
+import ListBooks from './components/ListBooks/'
 
 class BooksApp extends React.Component {
 
@@ -28,7 +28,7 @@ class BooksApp extends React.Component {
     BooksAPI.update(book, shelf).then(res => {
       this.setState(prev => {
 
-        if (shelf === "none") {
+        if (shelf === "none") {//remove book
           const books = prev.books.filter(b => b.id !== book.id)
 
           return { books }
@@ -36,21 +36,14 @@ class BooksApp extends React.Component {
         else {
           const foundIt = prev.books.filter(b => b.id === book.id)
 
-          if (foundIt.length > 0) {
-            const books = prev.books.map(b => {
-              if (b.id === book.id) {
-                b.shelf = shelf;
-              }
-              return b
-            })
+          if (foundIt.length > 0) {//update book
+            const books = this.updateShelfBook(prev.books, book, shelf)
 
             return { books }
           }
-          else {
+          else {//add new book
 
-            book.shelf = shelf
-            prev.books.push(book)
-            const { books } = prev
+            const books = this.addNewBookShelf(prev.books, book, shelf)
 
             return { books }
           }
@@ -61,6 +54,22 @@ class BooksApp extends React.Component {
     }).catch(err => {
       console.log(err)
     })
+  }
+
+  updateShelfBook(books, book, shelf) {
+    return books.map(b => {
+      if (b.id === book.id) {
+        b.shelf = shelf
+      }
+      return b
+    })
+  }
+
+  addNewBookShelf(books, book, shelf) {
+    book.shelf = shelf
+    books.push(book)
+
+    return books
   }
 
   render() {
