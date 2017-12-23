@@ -4,6 +4,7 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import Search from './components/Search/'
 import ListBooks from './components/ListBooks/'
+import AlertContainer from 'react-alert'
 
 class BooksApp extends React.Component {
 
@@ -12,6 +13,21 @@ class BooksApp extends React.Component {
     this.state = {
       books: []
     }
+
+    this.alertOptions = {
+      offset: 14,
+      position: 'bottom left',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
+  }
+
+  showAlert = (msg) => {
+    this.msg.show(msg, {
+      time: 2000,
+      type: 'success'
+    })
   }
 
   componentDidMount() {
@@ -28,27 +44,32 @@ class BooksApp extends React.Component {
     BooksAPI.update(book, shelf).then(res => {
       this.setState(prev => {
 
-        if (shelf === "none") {//remove book
-          const books = prev.books.filter(b => b.id !== book.id)
+        let books = []
+        let msg = ''
 
-          return { books }
+        if (shelf === "none") {//remove book
+          books = prev.books.filter(b => b.id !== book.id)
+
+          msg = 'Book remove successfully'
         }
         else {
           const foundIt = prev.books.filter(b => b.id === book.id)
 
           if (foundIt.length > 0) {//update book
-            const books = this.updateShelfBook(prev.books, book, shelf)
+            books = this.updateShelfBook(prev.books, book, shelf)
 
-            return { books }
+            msg = 'Book updated successfully'
           }
           else {//add new book
+            books = this.addNewBookShelf(prev.books, book, shelf)
 
-            const books = this.addNewBookShelf(prev.books, book, shelf)
-
-            return { books }
+            msg = 'Book added successfully'
           }
         }
 
+        this.showAlert(msg)
+
+        return { books }
 
       })
     }).catch(err => {
@@ -76,6 +97,8 @@ class BooksApp extends React.Component {
 
     return (
       <div className="app">
+        <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
+
         <Route exact path="/" render={() => (
           <ListBooks books={this.state.books} onChangeShelf={this.onChangeShelf} />
         )} />
