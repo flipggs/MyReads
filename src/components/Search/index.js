@@ -15,7 +15,7 @@ class Search extends Component {
         super(props)
 
         this.state = {
-            books: []
+            booksSearch: []
         }
     }
 
@@ -25,12 +25,12 @@ class Search extends Component {
 
         if (value.length && value.length >= 3) {
 
-            BooksAPI.search(value).then(books => {
+            BooksAPI.search(value).then(booksSearch => {
 
-                if (books && books.length > 0)
-                    this.setState({ books })
+                if (booksSearch && booksSearch.length > 0)
+                    this.setState({ booksSearch })
                 else
-                    this.setState({ books: [] })
+                    this.setState({ booksSearch: [] })
             }).catch(err => {
                 console.log(err)
             })
@@ -38,7 +38,7 @@ class Search extends Component {
     }
 
     render() {
-        const { onChangeShelf } = this.props
+        const { onChangeShelf, books } = this.props
 
         return (
             <div className="search-books">
@@ -49,14 +49,22 @@ class Search extends Component {
                     </div>
                 </div>
                 <div className="search-books-results">
-                    <IF test={this.state.books.length > 0} >
+                    <IF test={this.state.booksSearch.length > 0} >
                         <ol className="books-grid">
-                            {this.state.books.map(book => (
-                                <Book key={book.id} book={book} onChangeShelf={onChangeShelf} />
-                            ))}
+                            {this.state.booksSearch.map(book => {
+
+                                const findBook = books.find(item => (
+                                    item.id === book.id
+                                ))
+
+                                if (findBook)
+                                    book.shelf = findBook.shelf
+
+                                return <Book key={book.id} book={book} onChangeShelf={onChangeShelf} />
+                            })}
                         </ol>
                     </IF>
-                    <IF test={this.state.books.length === 0}>
+                    <IF test={this.state.booksSearch.length === 0}>
                         <h3>No result found </h3>
                     </IF>
                 </div>
